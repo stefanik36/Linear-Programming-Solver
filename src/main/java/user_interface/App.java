@@ -82,9 +82,11 @@ public class App {
 		ObjectiveType objectiveType;
 
 		System.out.println("maximalize (max) or minimalize (min): ");
-		if (sc.next().contains("max")) {
+		String command = sc.next();
+		
+		if (command.contains("max")) {
 			objectiveType = ObjectiveType.MAXIMALIZE;
-		} else if (sc.next().contains("min")) {
+		} else if (command.contains("min")) {
 			objectiveType = ObjectiveType.MINIMALIZE;
 		} else {
 			System.out.println("Unrecognized objective type.");
