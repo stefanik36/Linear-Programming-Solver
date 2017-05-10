@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 
 import controller.Controller;
+import exceptions.ProblemNotDefiniedCompletlyException;
 import model.Inequality;
 import model.InequalityType;
 import model.ObjectiveFunction;
+import model.ObjectiveType;
 
 public class App {
 
@@ -25,13 +27,20 @@ public class App {
 	}
 
 	private void start() {
-		addInqualities();
 
-		addObjectiveFunction();
+		int numberOfVariables = addObjectiveFunction();
+
+		addInqualities(numberOfVariables);
+
+		try {
+			System.out.println(ctrl.compute());
+		} catch (ProblemNotDefiniedCompletlyException e) {
+			e.printStackTrace();
+		}
 
 	}
 
-	private void addObjectiveFunction() {
+	private int addObjectiveFunction() {
 		System.out.println();
 		System.out.println("--- Objective Function ---");
 		int numberOfVariables = getNumberOfVariables();
@@ -39,12 +48,25 @@ public class App {
 		System.out.println();
 		List<Double> parameters = getParametersList(numberOfVariables);
 
-		ObjectiveFunction of = ctrl.createObjectiveFunction(parameters);
+		System.out.println("add restriction:");
+		List<Double> restrictionLeft = new ArrayList<>();
+		List<Double> restrictionRight = new ArrayList<>();
+		for(int i=1;i<=numberOfVariables;i++){
+			System.out.print("x"+i+" > ");
+			restrictionLeft.add(sc.nextDouble());
+			System.out.print("x"+i+" < ");
+			restrictionRight.add(sc.nextDouble());
+		}
+		
+		
+		
+		ObjectiveFunction of = ctrl.createObjectiveFunction(ObjectiveType.MAXIMALIZE, parameters, restrictionLeft, restrictionRight);//TODO Objective type
 
 		System.out.println(of);
+		return numberOfVariables;
 	}
 
-	private void addInqualities() {
+	private void addInqualities(int numberOfVariables) {
 		System.out.print("Number of inequalities: ");
 		Double numberOfInenqualities = sc.nextDouble();
 
@@ -52,7 +74,7 @@ public class App {
 			showInequalityLabel(inequalityNumber);
 
 			InequalityType inequalityType = getInequalityType();
-			int numberOfVariables = getNumberOfVariables();
+			// int numberOfVariables = getNumberOfVariables();
 
 			showInequalityStructure(numberOfVariables, inequalityType);
 

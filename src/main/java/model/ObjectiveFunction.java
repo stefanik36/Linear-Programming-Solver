@@ -6,10 +6,44 @@ public class ObjectiveFunction {
 
 	private ObjectiveType objectiveType;
 	private List<Double> parameters;
+	private List<Double> restrictionLeft;
+	private List<Double> restrictionRight;
 
-	public ObjectiveFunction(List<Double> parameters) {
+	public ObjectiveFunction(ObjectiveType objectiveType, List<Double> parameters, List<Double> restrictionLeft,
+			List<Double> restrictionRight) {
+		this.objectiveType = objectiveType;
 		this.parameters = parameters;
-		objectiveType = ObjectiveType.MAXIMALIZE; // TODO
+		this.restrictionLeft = restrictionLeft;
+		this.restrictionRight = restrictionRight;
+	}
+
+	public double getBiggestRange() {
+		double range = 0;
+		for (int i = 0; i < restrictionLeft.size(); i++) {
+			double length = Math.abs(restrictionLeft.get(i)) + Math.abs(restrictionRight.get(i));
+			range += length * length;
+		}
+		return Math.sqrt(range);
+	}
+
+	public List<Double> getRestrictionLeft() {
+		return restrictionLeft;
+	}
+
+	public void setRestrictionLeft(List<Double> restrictionLeft) {
+		this.restrictionLeft = restrictionLeft;
+	}
+
+	public List<Double> getRestrictionRight() {
+		return restrictionRight;
+	}
+
+	public void setRestrictionRight(List<Double> restrictionRight) {
+		this.restrictionRight = restrictionRight;
+	}
+
+	public int getNumberOfVariables() {
+		return parameters.size();
 	}
 
 	@Override
@@ -20,11 +54,8 @@ public class ObjectiveFunction {
 			sb.append(" + ");
 			sb.append(parameters.get(0) + "*x" + i);
 		}
-		sb.append(" -> "+objectiveType+"]");
+		sb.append(" -> " + objectiveType + "]");
 		return sb.toString();
-
 	}
-	
-	
 
 }
