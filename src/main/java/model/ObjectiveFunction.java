@@ -20,7 +20,7 @@ public class ObjectiveFunction {
 	public double getBiggestRange() {
 		double range = 0;
 		for (int i = 0; i < restrictionLeft.size(); i++) {
-			double length = Math.abs(restrictionLeft.get(i)) + Math.abs(restrictionRight.get(i));
+			double length = Math.abs(restrictionLeft.get(i)) - Math.abs(restrictionRight.get(i));
 			range += length * length;
 		}
 		return Math.sqrt(range)/2;

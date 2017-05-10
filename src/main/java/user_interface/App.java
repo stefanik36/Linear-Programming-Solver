@@ -31,7 +31,7 @@ public class App {
 		int numberOfVariables = addObjectiveFunction();
 
 		addInqualities(numberOfVariables);
-		
+
 		System.out.print("set accuracy: ");
 		ctrl.createAccuracy(sc.nextDouble());
 
@@ -54,19 +54,35 @@ public class App {
 		System.out.println("add restriction:");
 		List<Double> restrictionLeft = new ArrayList<>();
 		List<Double> restrictionRight = new ArrayList<>();
-		for(int i=1;i<=numberOfVariables;i++){
-			System.out.print("x"+i+" > ");
+		for (int i = 1; i <= numberOfVariables; i++) {
+			System.out.print("x" + i + " > ");
 			restrictionLeft.add(sc.nextDouble());
-			System.out.print("x"+i+" < ");
+			System.out.print("x" + i + " < ");
 			restrictionRight.add(sc.nextDouble());
 		}
-		
-		
-		
-		ObjectiveFunction of = ctrl.createObjectiveFunction(ObjectiveType.MAXIMALIZE, parameters, restrictionLeft, restrictionRight);//TODO Objective type
+
+		ObjectiveType objectiveType = getObjectiveType();
+
+		ObjectiveFunction of = ctrl.createObjectiveFunction(objectiveType, parameters, restrictionLeft,
+				restrictionRight);
 
 		System.out.println(of);
 		return numberOfVariables;
+	}
+
+	private ObjectiveType getObjectiveType() {
+		ObjectiveType objectiveType;
+
+		System.out.println("maximalize (max) or minimalize (min): ");
+		if (sc.nextLine().equals("max")) {
+			objectiveType = ObjectiveType.MAXIMALIZE;
+		} else if (sc.nextLine().equals("min")) {
+			objectiveType = ObjectiveType.MINIMALIZE;
+		} else {
+			System.out.println("Unrecognized objective type.");
+			objectiveType = getObjectiveType();
+		}
+		return objectiveType;
 	}
 
 	private void addInqualities(int numberOfVariables) {

@@ -69,9 +69,9 @@ public class Entity implements Comparable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Entity [");
-		sb.append("v: " + String.format("%.2f", value) + " | ");
-		vector.stream().limit(vector.size() - 1).forEach(d -> sb.append(String.format("%.2f", d) + ", "));
-		sb.append(String.format("%.2f", vector.get(vector.size() - 1)));
+		sb.append("v: " + String.format("%.8f", value) + " | ");
+		vector.stream().limit(vector.size() - 1).forEach(d -> sb.append(String.format("%.8f", d) + ", "));
+		sb.append(String.format("%.8f", vector.get(vector.size() - 1)));
 		sb.append("]");
 		return sb.toString();
 	}

@@ -29,22 +29,32 @@ public class MonteCarloLogic {
 	}
 
 	public ResultVector start() {
-		double range = objectiveFunction.getBiggestRange() / 2;
+		double range = objectiveFunction.getBiggestRange();
 		Population initPopulation = getInitialPopulation();
 
 		Population survivers = initPopulation.chooseBestEntities(objectiveFunction.getObjectiveType(), SAMPLES_NUMBER);
 		System.out.println("survivors: " + survivers);
 
 		Population population;
+		Entity oldE = survivers.getEntityList().get(0);
+		Entity newE;
+		double distance = range / 2;
 		while (range > accuracy) {
-			population = getPopulation(range, survivers);
-			System.out.println("nop: "+population.numberOfEntities());
+
+			population = getPopulation(range, oldE);
 			survivers = population.chooseBestEntities(objectiveFunction.getObjectiveType(), SAMPLES_NUMBER);
+			newE = survivers.getEntityList().get(0);
+			distance = calculateDistance(oldE, newE);
+			oldE = newE;
+			System.out.println("old:"+oldE+" new: "+newE+" dist: "+distance);
+
+			range = distance * 1.1;
+
 			System.out.println("s: " + survivers);
-			range = range / 100;
 		}
 
 		// for (int i = 0; i < survivers.numberOfEntities(); i++) {//TODO
+		// threads
 		// Entity e = survivers.getEntityList().get(i);
 		//
 		// }
@@ -52,8 +62,16 @@ public class MonteCarloLogic {
 		return result;
 	}
 
-	private Population getPopulation(double range, Population survivers) {
-		Entity e = survivers.getEntityList().get(0);
+	private double calculateDistance(Entity oldE, Entity newE) {
+		double distance = 0;
+		for (int i = 0; i < oldE.getVector().size(); i++) {
+			double length = Math.abs(oldE.getVector().get(i)) - Math.abs(newE.getVector().get(i));
+			distance += length * length;
+		}
+		return Math.sqrt(distance);
+	}
+
+	private Population getPopulation(double range, Entity e) {
 
 		Population population = new Population();
 

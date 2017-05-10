@@ -41,7 +41,7 @@ public class Population {
 		Collections.sort(entityList);
 		if (objectiveType.equals(ObjectiveType.MAXIMALIZE)) {
 			return new Population(entityList.subList(entityList.size() - numberOfBestEntities, entityList.size()));
-		} else if (objectiveType.equals(ObjectiveType.MAXIMALIZE)) {
+		} else if (objectiveType.equals(ObjectiveType.MINIMALIZE)) {
 			return new Population(entityList.subList(0, numberOfBestEntities));
 		}
 		return null;// TODO Exception
