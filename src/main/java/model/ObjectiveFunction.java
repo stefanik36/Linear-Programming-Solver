@@ -23,7 +23,7 @@ public class ObjectiveFunction {
 			double length = Math.abs(restrictionLeft.get(i)) + Math.abs(restrictionRight.get(i));
 			range += length * length;
 		}
-		return Math.sqrt(range);
+		return Math.sqrt(range)/2;
 	}
 
 	public List<Double> getRestrictionLeft() {
@@ -44,6 +44,22 @@ public class ObjectiveFunction {
 
 	public int getNumberOfVariables() {
 		return parameters.size();
+	}
+
+	public List<Double> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<Double> parameters) {
+		this.parameters = parameters;
+	}
+
+	public ObjectiveType getObjectiveType() {
+		return objectiveType;
+	}
+
+	public void setObjectiveType(ObjectiveType objectiveType) {
+		this.objectiveType = objectiveType;
 	}
 
 	@Override

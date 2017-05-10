@@ -31,6 +31,9 @@ public class App {
 		int numberOfVariables = addObjectiveFunction();
 
 		addInqualities(numberOfVariables);
+		
+		System.out.print("set accuracy: ");
+		ctrl.createAccuracy(sc.nextDouble());
 
 		try {
 			System.out.println(ctrl.compute());

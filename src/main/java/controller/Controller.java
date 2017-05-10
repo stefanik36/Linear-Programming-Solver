@@ -15,6 +15,7 @@ public class Controller {
 
 	private List<Inequality> inequalities;
 	private ObjectiveFunction objectiveFunction;
+	private double accuracy;
 	private MonteCarloLogic mcl;
 
 	public Controller() {
@@ -26,7 +27,7 @@ public class Controller {
 			throw new ProblemNotDefiniedCompletlyException();
 		}
 		showLinearProgrammingProblem();
-		mcl = new MonteCarloLogic(inequalities, objectiveFunction);
+		mcl = new MonteCarloLogic(inequalities, objectiveFunction, accuracy);
 
 		return mcl.start();
 	}
@@ -49,6 +50,11 @@ public class Controller {
 		System.out.println("--- Linear programing ---");
 		System.out.println(objectiveFunction);
 		inequalities.stream().forEach(i -> System.out.println(i));
+	}
+
+	public void createAccuracy(double accuracy) {
+		this.accuracy = accuracy;
+
 	}
 
 }

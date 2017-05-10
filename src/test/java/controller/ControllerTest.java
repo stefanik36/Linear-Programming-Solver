@@ -21,7 +21,7 @@ public class ControllerTest {
 
 		ObjectiveFunction objectiveFunction = createObjectiveFunction();
 		List<Inequality> inequalities = createInequalities();
-		MonteCarloLogic mcl = new MonteCarloLogic(inequalities, objectiveFunction);
+		MonteCarloLogic mcl = new MonteCarloLogic(inequalities, objectiveFunction, 0.001);
 
 		System.out.println(mcl.start());
 
@@ -37,8 +37,8 @@ public class ControllerTest {
 	}
 
 	private ObjectiveFunction createObjectiveFunction() {
-		List<Double> obParameters = Arrays.asList(new Double[] { 1., 1. });
-		ObjectiveFunction objectiveFunction = new ObjectiveFunction(ObjectiveType.MAXIMALIZE, obParameters, Arrays.asList(0., 0.), Arrays.asList(10000., 10000.));
+		List<Double> obParameters = Arrays.asList(new Double[] { 1.8, 1. });
+		ObjectiveFunction objectiveFunction = new ObjectiveFunction(ObjectiveType.MAXIMALIZE, obParameters, Arrays.asList(0., 0.), Arrays.asList(10000., 4000.));
 		return objectiveFunction;
 	}
 
