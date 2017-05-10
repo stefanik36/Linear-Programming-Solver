@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import controller.Controller;
 import exceptions.ProblemNotDefiniedCompletlyException;
+import model.Entity;
 import model.Inequality;
 import model.InequalityType;
 import model.ObjectiveFunction;
@@ -32,11 +33,17 @@ public class App {
 
 		addInqualities(numberOfVariables);
 
-		System.out.print("set accuracy: ");
+		System.out.print("set epsilon: ");
 		ctrl.createAccuracy(sc.nextDouble());
 
 		try {
-			System.out.println(ctrl.compute());
+			Entity result = ctrl.compute();
+
+			System.out.println("--- RESULT ---");
+			for (int i = 0; i < result.getVector().size(); i++) {
+				System.out.println("x" + i + " = " + String.format("%.8f", result.getVector().get(i)));
+			}
+			System.out.println("objective function value = " + String.format("%.8f", result.getValue()));
 		} catch (ProblemNotDefiniedCompletlyException e) {
 			e.printStackTrace();
 		}
@@ -49,7 +56,10 @@ public class App {
 		int numberOfVariables = getNumberOfVariables();
 		showFunctionStructure(numberOfVariables);
 		System.out.println();
+
+		ObjectiveType objectiveType = getObjectiveType();
 		List<Double> parameters = getParametersList(numberOfVariables);
+		List<Integer> powers = getPowersList(numberOfVariables);
 
 		System.out.println("add restriction:");
 		List<Double> restrictionLeft = new ArrayList<>();
@@ -61,9 +71,7 @@ public class App {
 			restrictionRight.add(sc.nextDouble());
 		}
 
-		ObjectiveType objectiveType = getObjectiveType();
-
-		ObjectiveFunction of = ctrl.createObjectiveFunction(objectiveType, parameters, restrictionLeft,
+		ObjectiveFunction of = ctrl.createObjectiveFunction(objectiveType, parameters, powers, restrictionLeft,
 				restrictionRight);
 
 		System.out.println(of);
@@ -74,9 +82,9 @@ public class App {
 		ObjectiveType objectiveType;
 
 		System.out.println("maximalize (max) or minimalize (min): ");
-		if (sc.nextLine().equals("max")) {
+		if (sc.next().contains("max")) {
 			objectiveType = ObjectiveType.MAXIMALIZE;
-		} else if (sc.nextLine().equals("min")) {
+		} else if (sc.next().contains("min")) {
 			objectiveType = ObjectiveType.MINIMALIZE;
 		} else {
 			System.out.println("Unrecognized objective type.");
@@ -99,9 +107,11 @@ public class App {
 
 			List<Double> parameters = getParametersList(numberOfVariables);
 
+			List<Integer> powers = getPowersList(numberOfVariables);
+
 			double intercept = getInterecept();
 
-			Inequality i = ctrl.createIneqality(inequalityNumber, inequalityType, parameters, intercept);
+			Inequality i = ctrl.createIneqality(inequalityNumber, inequalityType, parameters, powers, intercept);
 			System.out.println(i);
 		}
 	}
@@ -109,6 +119,17 @@ public class App {
 	private double getInterecept() {
 		System.out.print("b: ");
 		return sc.nextDouble();
+	}
+
+	private List<Integer> getPowersList(int numberOfVariables) {
+		List<Integer> list = new ArrayList<>();
+
+		for (int j = 1; j <= numberOfVariables; j++) {
+			System.out.print("n" + j + ": ");
+			list.add(sc.nextInt());
+		}
+
+		return list;
 	}
 
 	private List<Double> getParametersList(int numberOfVariables) {
@@ -142,9 +163,9 @@ public class App {
 	}
 
 	private void showFunctionStructure(int numberOfVariables) {
-		System.out.print("a" + 1 + "*x" + 1);
+		System.out.print("a" + 1 + "*x" + 1 + "^n" + 1);
 		for (int i = 2; i <= numberOfVariables; i++) {
-			System.out.print(" + a" + i + "*x" + i);
+			System.out.print(" + a" + i + "*x" + i + "^n" + i);
 		}
 	}
 

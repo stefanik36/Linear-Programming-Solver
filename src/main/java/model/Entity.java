@@ -17,7 +17,8 @@ public class Entity implements Comparable {
 	private double computeEntityValue(ObjectiveFunction objectiveFunction) {
 		double value = 0;
 		for (int i = 0; i < objectiveFunction.getNumberOfVariables(); i++) {
-			value += objectiveFunction.getParameters().get(i) * vector.get(i);
+			value += objectiveFunction.getParameters().get(i)
+					* Math.pow(vector.get(i), objectiveFunction.getPowers().get(i));
 		}
 		return value;
 	}
@@ -43,7 +44,7 @@ public class Entity implements Comparable {
 					return false;
 				}
 			} else {
-				return false;// Exception
+				return false;// TODO Exception
 			}
 
 		}
@@ -53,17 +54,17 @@ public class Entity implements Comparable {
 	private double getSum(Inequality i) {
 		double sum = 0;
 		for (int it = 0; it < vector.size(); it++) {
-			// System.out.println("v: "+vector.get(it)+" i:
-			// "+i.getParameters().get(it));
-			sum += vector.get(it) * i.getParameters().get(it);
-			// System.out.println("sum: "+sum);
+			sum += Math.pow(vector.get(it), i.getPowers().get(it)) * i.getParameters().get(it);
 		}
-		// System.out.println("------------------------");
 		return sum;
 	}
 
 	public List<Double> getVector() {
 		return vector;
+	}
+
+	public double getValue() {
+		return value;
 	}
 
 	@Override

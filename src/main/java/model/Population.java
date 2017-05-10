@@ -27,15 +27,6 @@ public class Population {
 		return entityList.size();
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("population: \n");
-		for (Entity e : entityList) {
-			sb.append(e + "\n");
-		}
-		return sb.toString();
-	}
-
 	public Population chooseBestEntities(ObjectiveType objectiveType, int numberOfBestEntities) {
 
 		Collections.sort(entityList);
@@ -53,6 +44,15 @@ public class Population {
 
 	public void setEntityList(List<Entity> entityList) {
 		this.entityList = entityList;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("population: \n");
+		for (Entity e : entityList) {
+			sb.append(e + "\n");
+		}
+		return sb.toString();
 	}
 
 }

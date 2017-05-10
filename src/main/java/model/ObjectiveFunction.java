@@ -6,13 +6,15 @@ public class ObjectiveFunction {
 
 	private ObjectiveType objectiveType;
 	private List<Double> parameters;
+	private List<Integer> powers;
 	private List<Double> restrictionLeft;
 	private List<Double> restrictionRight;
 
-	public ObjectiveFunction(ObjectiveType objectiveType, List<Double> parameters, List<Double> restrictionLeft,
-			List<Double> restrictionRight) {
+	public ObjectiveFunction(ObjectiveType objectiveType, List<Double> parameters, List<Integer> powers,
+			List<Double> restrictionLeft, List<Double> restrictionRight) {
 		this.objectiveType = objectiveType;
 		this.parameters = parameters;
+		this.powers = powers;
 		this.restrictionLeft = restrictionLeft;
 		this.restrictionRight = restrictionRight;
 	}
@@ -23,7 +25,7 @@ public class ObjectiveFunction {
 			double length = Math.abs(restrictionLeft.get(i)) - Math.abs(restrictionRight.get(i));
 			range += length * length;
 		}
-		return Math.sqrt(range)/2;
+		return Math.sqrt(range) / 2;
 	}
 
 	public List<Double> getRestrictionLeft() {
@@ -62,13 +64,21 @@ public class ObjectiveFunction {
 		this.objectiveType = objectiveType;
 	}
 
+	public List<Integer> getPowers() {
+		return powers;
+	}
+
+	public void setPowers(List<Integer> powers) {
+		this.powers = powers;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("[");
-		sb.append(parameters.get(0) + "*x1");
-		for (int i = 2; i <= parameters.size(); i++) {
+		sb.append(parameters.get(0) + "*x1^" + powers.get(0));
+		for (int i = 1; i < parameters.size(); i++) {
 			sb.append(" + ");
-			sb.append(parameters.get(0) + "*x" + i);
+			sb.append(parameters.get(i) + "*x" + (i + 1) + "^" + powers.get(i));
 		}
 		sb.append(" -> " + objectiveType + "]");
 		return sb.toString();

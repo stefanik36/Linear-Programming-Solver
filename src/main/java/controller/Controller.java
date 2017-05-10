@@ -5,6 +5,7 @@ import java.util.List;
 
 import exceptions.ProblemNotDefiniedCompletlyException;
 import logic.MonteCarloLogic;
+import model.Entity;
 import model.Inequality;
 import model.InequalityType;
 import model.ObjectiveFunction;
@@ -22,7 +23,7 @@ public class Controller {
 		inequalities = new ArrayList<>();
 	}
 
-	public ResultVector compute() throws ProblemNotDefiniedCompletlyException {
+	public Entity compute() throws ProblemNotDefiniedCompletlyException {
 		if ((inequalities.isEmpty()) || (objectiveFunction == null)) {
 			throw new ProblemNotDefiniedCompletlyException();
 		}
@@ -33,15 +34,15 @@ public class Controller {
 	}
 
 	public Inequality createIneqality(int inequalityNumber, InequalityType inequalityType, List<Double> parameters,
-			double intercept) {
-		Inequality i = new Inequality(inequalityNumber, inequalityType, parameters, intercept);
+			List<Integer> powers, double intercept) {
+		Inequality i = new Inequality(inequalityNumber, inequalityType, parameters, powers, intercept);
 		inequalities.add(i);
 		return i;
 	}
 
 	public ObjectiveFunction createObjectiveFunction(ObjectiveType objectiveType, List<Double> parameters,
-			List<Double> restrictionLeft, List<Double> restrictionRight) {
-		objectiveFunction = new ObjectiveFunction(objectiveType, parameters, restrictionLeft, restrictionRight);
+			List<Integer> powers, List<Double> restrictionLeft, List<Double> restrictionRight) {
+		objectiveFunction = new ObjectiveFunction(objectiveType, parameters, powers, restrictionLeft, restrictionRight);
 		return objectiveFunction;
 	}
 

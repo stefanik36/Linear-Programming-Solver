@@ -18,7 +18,6 @@ public class MonteCarloLogic {
 	private List<Inequality> inequalities;
 	private ObjectiveFunction objectiveFunction;
 	private double accuracy;
-	private ResultVector result;
 	private int SAMPLES_NUMBER = 1;// TODO
 	private int ENTITIES_NUMBER = 20000;
 
@@ -28,7 +27,7 @@ public class MonteCarloLogic {
 		this.accuracy = accuracy;
 	}
 
-	public ResultVector start() {
+	public Entity start() {
 		double range = objectiveFunction.getBiggestRange();
 		Population initPopulation = getInitialPopulation();
 
@@ -46,7 +45,7 @@ public class MonteCarloLogic {
 			newE = survivers.getEntityList().get(0);
 			distance = calculateDistance(oldE, newE);
 			oldE = newE;
-			System.out.println("old:"+oldE+" new: "+newE+" dist: "+distance);
+			System.out.println("old:" + oldE + " new: " + newE + " dist: " + distance);
 
 			range = distance * 1.1;
 
@@ -59,7 +58,7 @@ public class MonteCarloLogic {
 		//
 		// }
 
-		return result;
+		return oldE;
 	}
 
 	private double calculateDistance(Entity oldE, Entity newE) {
