@@ -29,7 +29,7 @@ public class RunnablePopulationCalculator extends Thread {
 
 		Population population = new Population();
 		double range = objectiveFunction.getBiggestRange();
-		// double distance = range / 2;
+		double distance = range / 2;
 
 		Population survivers;
 		// Entity oldE = entity;
@@ -37,50 +37,71 @@ public class RunnablePopulationCalculator extends Thread {
 		while (range > accuracy) {
 
 			population = getPopulation(range, entity);
-			survivers = population.chooseBestEntities(objectiveFunction.getObjectiveType(),
-					MonteCarloLogic.SAMPLES_NUMBER);
+			survivers = population.chooseBestEntities(objectiveFunction.getObjectiveType(), 1);
 
-			List<RunnablePopulationCalculator> tList = createThreads(survivers);
-
-			newE = getResult(tList);
+			// double range = objectiveFunction.getBiggestRange();
+			// Population population;
+			// Entity oldE = survivers.getEntityList().get(0);
+			// Entity newE;
+			// double distance = range / 2;
+			// while (range > accuracy) {
+			//
+			// population = getPopulation(range, oldE);
+			// survivers =
+			// population.chooseBestEntities(objectiveFunction.getObjectiveType(),
+			// SAMPLES_NUMBER);
+			// newE = survivers.getEntityList().get(0);
 			// distance = calculateDistance(oldE, newE);
+			// oldE = newE;
+			// System.out.println("old:" + oldE + " new: " + newE + " dist: " +
+			// distance);
+			//
+			// range = distance * 1.1;
+			// // range = range / 10;
+			// System.out.println("s: " + survivers);
+			// }
+			// List<RunnablePopulationCalculator> tList =
+			// createThreads(survivers);
+			newE = survivers.getEntityList().get(0);
+			// newE = getResult(tList);
+			distance = calculateDistance(entity, newE);
 			entity = newE;
 			// System.out.println("old:" + oldE + " new: " + newE + " dist: " +
 			// distance);
 
-			// range = distance * 1.1;
-			range = range / 10;
+			range = distance * 1.1;
+			// range = range / 1000;
 			System.out.println("s: " + survivers);
 		}
 
 	}
 
-	private Entity getResult(List<RunnablePopulationCalculator> tList) {
-		Population eGroup = new Population();
-
-		for (RunnablePopulationCalculator rpc : tList) {
-			try {
-				rpc.join();
-				eGroup.addEntity(rpc.getEntity());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return eGroup.chooseBestEntities(objectiveFunction.getObjectiveType(), 1).getEntityList().get(0);
-	}
-
-	private List<RunnablePopulationCalculator> createThreads(Population survivers) {
-		List<RunnablePopulationCalculator> tList = new ArrayList<>();
-		for (int i = 0; i < survivers.getEntityList().size(); i++) {
-
-			RunnablePopulationCalculator rpc = new RunnablePopulationCalculator(survivers.getEntityList().get(i),
-					objectiveFunction, inequalities, accuracy);
-			rpc.start();
-			tList.add(rpc);
-		}
-		return tList;
-	}
+//	private Entity getResult(List<RunnablePopulationCalculator> tList) {
+//		Population eGroup = new Population();
+//
+//		for (RunnablePopulationCalculator rpc : tList) {
+//			try {
+//				rpc.join();
+//				eGroup.addEntity(rpc.getEntity());
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+//		return eGroup.chooseBestEntities(objectiveFunction.getObjectiveType(), 1).getEntityList().get(0);
+//	}
+//
+//	private List<RunnablePopulationCalculator> createThreads(Population survivers) {
+//		List<RunnablePopulationCalculator> tList = new ArrayList<>();
+//		for (int i = 0; i < survivers.getEntityList().size(); i++) {
+//
+//			RunnablePopulationCalculator rpc = new RunnablePopulationCalculator(survivers.getEntityList().get(i),
+//					objectiveFunction, inequalities, accuracy);
+//			rpc.start();
+//			tList.add(rpc);
+//		}
+//		return tList;
+//	}
 
 	private double calculateDistance(Entity oldE, Entity newE) {
 		double distance = 0;

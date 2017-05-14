@@ -18,8 +18,8 @@ public class MonteCarloLogic {
 	private List<Inequality> inequalities;
 	private ObjectiveFunction objectiveFunction;
 	private double accuracy;
-	public static int SAMPLES_NUMBER = 1;// TODO
-	public static int ENTITIES_NUMBER = 20;
+	public static int SAMPLES_NUMBER = 100;// TODO
+	public static int ENTITIES_NUMBER = 20000;
 
 	public MonteCarloLogic(List<Inequality> inequalities, ObjectiveFunction objectiveFunction, double accuracy) {
 		this.inequalities = inequalities;
@@ -73,6 +73,7 @@ public class MonteCarloLogic {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("threads Group: "+eGroup);
 		return eGroup.chooseBestEntities(objectiveFunction.getObjectiveType(), 1).getEntityList().get(0);
 	}
 
