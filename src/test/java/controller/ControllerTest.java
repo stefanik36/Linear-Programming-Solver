@@ -21,7 +21,7 @@ public class ControllerTest {
 
 		ObjectiveFunction objectiveFunction = createObjectiveFunction();
 		List<Inequality> inequalities = createInequalities();
-		MonteCarloLogic mcl = new MonteCarloLogic(inequalities, objectiveFunction, 0.001);
+		MonteCarloLogic mcl = new MonteCarloLogic(inequalities, objectiveFunction, 0.000001);
 
 		System.out.println(mcl.start());
 

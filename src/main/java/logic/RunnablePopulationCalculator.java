@@ -1,70 +1,63 @@
 package logic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import model.Entity;
 import model.Inequality;
 import model.ObjectiveFunction;
 import model.Population;
-import model.ResultVector;
 
-public class MonteCarloLogic {
-
-	private List<Inequality> inequalities;
+public class RunnablePopulationCalculator extends Thread {
+	private Entity entity;
 	private ObjectiveFunction objectiveFunction;
+	private List<Inequality> inequalities;
 	private double accuracy;
-	public static int SAMPLES_NUMBER = 1;// TODO
-	public static int ENTITIES_NUMBER = 20;
 
-	public MonteCarloLogic(List<Inequality> inequalities, ObjectiveFunction objectiveFunction, double accuracy) {
-		this.inequalities = inequalities;
+	public RunnablePopulationCalculator(Entity entity, ObjectiveFunction objectiveFunction,
+			List<Inequality> inequalities, double accuracy) {
+		this.entity = entity;
 		this.objectiveFunction = objectiveFunction;
+		this.inequalities = inequalities;
 		this.accuracy = accuracy;
 	}
 
-	public Entity start() {
+	@Override
+	public void run() {
+		System.out.println("runnung");
 
-		Population initPopulation = getInitialPopulation();
-
-		Population survivers = initPopulation.chooseBestEntities(objectiveFunction.getObjectiveType(), SAMPLES_NUMBER);
-		System.out.println("survivors: " + survivers);
-
-		List<RunnablePopulationCalculator> tList = createThreads(survivers);
-
-		Entity result = getResult(tList);
-
-		// double range = objectiveFunction.getBiggestRange();
-		// Population population;
-		// Entity oldE = survivers.getEntityList().get(0);
-		// Entity newE;
+		Population population = new Population();
+		double range = objectiveFunction.getBiggestRange();
 		// double distance = range / 2;
-		// while (range > accuracy) {
-		//
-		// population = getPopulation(range, oldE);
-		// survivers =
-		// population.chooseBestEntities(objectiveFunction.getObjectiveType(),
-		// SAMPLES_NUMBER);
-		// newE = survivers.getEntityList().get(0);
-		// distance = calculateDistance(oldE, newE);
-		// oldE = newE;
-		// System.out.println("old:" + oldE + " new: " + newE + " dist: " +
-		// distance);
-		//
-		// range = distance * 1.1;
-		// // range = range / 10;
-		// System.out.println("s: " + survivers);
-		// }
 
-		return result;
+		Population survivers;
+		// Entity oldE = entity;
+		Entity newE;
+		while (range > accuracy) {
+
+			population = getPopulation(range, entity);
+			survivers = population.chooseBestEntities(objectiveFunction.getObjectiveType(),
+					MonteCarloLogic.SAMPLES_NUMBER);
+
+			List<RunnablePopulationCalculator> tList = createThreads(survivers);
+
+			newE = getResult(tList);
+			// distance = calculateDistance(oldE, newE);
+			entity = newE;
+			// System.out.println("old:" + oldE + " new: " + newE + " dist: " +
+			// distance);
+
+			// range = distance * 1.1;
+			range = range / 10;
+			System.out.println("s: " + survivers);
+		}
+
 	}
 
 	private Entity getResult(List<RunnablePopulationCalculator> tList) {
 		Population eGroup = new Population();
+
 		for (RunnablePopulationCalculator rpc : tList) {
 			try {
 				rpc.join();
@@ -72,6 +65,7 @@ public class MonteCarloLogic {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
 		}
 		return eGroup.chooseBestEntities(objectiveFunction.getObjectiveType(), 1).getEntityList().get(0);
 	}
@@ -82,10 +76,8 @@ public class MonteCarloLogic {
 
 			RunnablePopulationCalculator rpc = new RunnablePopulationCalculator(survivers.getEntityList().get(i),
 					objectiveFunction, inequalities, accuracy);
-
 			rpc.start();
 			tList.add(rpc);
-
 		}
 		return tList;
 	}
@@ -116,21 +108,10 @@ public class MonteCarloLogic {
 			rightL.add(right);
 		}
 
-		for (int i = 0; i < ENTITIES_NUMBER; i++) {
+		for (int i = 0; i < MonteCarloLogic.ENTITIES_NUMBER; i++) {
 			Entity entity = getNewEntity(leftL, rightL);
 			population.addEntity(entity);
 		}
-		return population;
-	}
-
-	private Population getInitialPopulation() {
-		Population population = new Population();
-		for (int i = 0; i < ENTITIES_NUMBER; i++) {
-			Entity entity = getNewEntity(objectiveFunction.getRestrictionLeft(),
-					objectiveFunction.getRestrictionRight());
-			population.addEntity(entity);
-		}
-		// System.out.println(population);
 		return population;
 	}
 
@@ -144,6 +125,10 @@ public class MonteCarloLogic {
 			entity = new Entity(randVector, objectiveFunction);
 			// System.out.println(entity);
 		} while (!entity.checkMembership(inequalities));
+		return entity;
+	}
+
+	public Entity getEntity() {
 		return entity;
 	}
 
